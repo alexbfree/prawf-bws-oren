@@ -51,6 +51,16 @@ class FlowersController extends ScalatraServlet with JacksonJsonSupport {
       collection.find().first().headResult().toJson
   }
 
+  def toDocument(person:Person) : Document = {
+    return Document("_id" -> person.id, "name" -> person.name)
+  }
+
+  post("/mongo/create") {
+    val person = parsedBody.extract[Person]
+    val document = toDocument(person)
+    collection.insertOne(document).results()
+  }
+
   post("/create") {
     parsedBody.extract[Person]
   }
